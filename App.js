@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { SafeAreaView, TouchableWithoutFeedback } from 'react-native-web';
 
@@ -36,9 +36,55 @@ const data = [
   },
 
 ];
+const CustomIcon = ({type, iconName, size})=>{
+  const [colors, setColors] = useState([])
+  useEffect(()=>{
+    switch(type) {
+    case 'default':
+      setColors([styles.defaultIconColor, styles.defaultIconColorHover]);
+      break;
+    case 'play':
+      setColors([styles.playIconColor, styles.playIconColorHover]);
+      break;
+    case 'options':
+      setColors([styles.optionsIconColor, styles.optionsIconColorHover]);
+      break;
+    case 'appbar':
+      setColors([styles.appBarIconColor, styles.appBarIconColorHover]);
+      break;
+    default:
+      setColors([styles.appBarIconColor, styles.appBarIconColorHover]);
+      break;
+    };
+    
+      
+    },[]);
+  return(
+    <View style={styles.icon}>
+    <Pressable >
+      {({pressed})=>(
+         
+        <Icon 
+          name={iconName} 
+          size={size} 
+          style={{padding:10},pressed ? colors && colors[1] : colors && colors[0]}
+          />
+      )}
+    </Pressable>
+  </View>
+  );
+};
 
 const BookItem = ({ title, author, progress, img }) => (
+  
+  <Pressable
+  style={({pressed})=>[
+    {
+      backgroundColor: (pressed ?'#05364c':'#04293A')
+    }, 
+  ]}>
   <View style={styles.item}>
+    
     <View style={styles.imageBox}>
     <Image source={img}
       style={styles.bookImage} />
@@ -51,13 +97,16 @@ const BookItem = ({ title, author, progress, img }) => (
 
       </View>
       <View style={styles.bookRight}>
-
-        <Icon name="play" size={25} color='#ccc' />
+        <CustomIcon type='play' iconName='play' size={25}/>
       </View>
     </View>
   </View>
+  </Pressable>
 );
+
+
 export default function App() {
+  const [searchText, setSearchText] = React.useState("");
   const bookList = ({ item }) => (
     <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem>
   )
@@ -65,12 +114,11 @@ export default function App() {
     <View style={styles.container}>
       <View style={styles.topOptions}>
         <View style={styles.topLeft}>
-          <Icon style={styles.icon} name="folder-open" size={20} color="#999" />
-
+          <CustomIcon iconName="folder-open" size={20} type='options' />
         </View>
         <View style={styles.topRight}>
-          <Icon style={styles.icon} name="sort-alpha-down" size={20} color="#999" />
-          <Icon style={styles.icon} name="ellipsis-v" size={20} color="#999" />
+          <CustomIcon iconName="sort-alpha-down" size={20} type='options' />
+          <CustomIcon iconName="ellipsis-v" size={20} type='options' />
         </View>
       </View>
       <View style={styles.header}>
@@ -78,13 +126,19 @@ export default function App() {
         </Text>
         <TextInput
           style={styles.searchBar}
+          onChangeText={setSearchText}
           placeholder="Search"
           placeholderTextColor="#fff"
         />
       </View>
       <View style={styles.containerList}>
         <FlatList
-          data={data}
+          data={data.filter(({title,author})=>{
+            const searchTitle = (title).toLowerCase().includes(searchText.toLowerCase());
+            const searchAuthor = (author).toLowerCase().includes(searchText.toLowerCase());
+            return searchTitle || searchAuthor;
+          }
+          )}
           renderItem={bookList}
           keyExtractor={item => item.id}
         >
@@ -92,11 +146,11 @@ export default function App() {
         </FlatList>
       </View>
       <View style={styles.appBar}>
-        <Icon name="home" size={25} color="#999" />
-        <Icon name="book-open" size={25} color="#ECB365" />
-        <Icon name="bookmark" size={25} color="#999" />
-        <Icon name="user" size={25} color="#999" />
-        <Icon name="sliders-h" size={25} color="#999" />
+        <CustomIcon iconName="home" size={25} type='appbar' />
+        <CustomIcon iconName="book-open" size={25} type="appbar" />
+        <CustomIcon iconName="bookmark" size={25} type="appbar" />
+        <CustomIcon iconName="user" size={25} type="appbar" />
+        <CustomIcon iconName="sliders-h" size={25} type="appbar" />
 
       </View>
       <StatusBar style='light' />
@@ -133,10 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  icon: {
-    paddingRight: 10,
-    paddingLeft: 10,
-  },
+  
   header: {
     paddingLeft: '3%',
     paddingRight: '3%',
@@ -156,7 +207,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: "row",
-    margin: 5,
+
   },
   bookData: {
     alignSelf: 'stretch',
@@ -164,7 +215,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: '#555',
-    marginLeft: 6,
     
   },
   bookRight: {
@@ -191,17 +241,18 @@ const styles = StyleSheet.create({
   bookMetadata: {
     flexDirection: "column",
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
+    margin: 6,
   },
   imageBox:{
-    paddingTop: 2,
-    paddingBottom: 2,
-    flex: 1/2.5,
+    padding: 5,
+    flex: 1/3,
     aspectRatio: 1 / 1,
   },
   bookImage: {
     aspectRatio: 1/1,
     flex: 1,
+    borderRadius: 7,
   },
   appBar: {
     flexDirection: 'row',
@@ -222,4 +273,33 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
   },
+  icon:{
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  defaultIconColor:{
+    color: '#999',
+  },
+  defaultIconColorHover:{
+    color: '#ECB365',
+  },
+  playIconColor:{
+    color: '#ccc',
+  },
+  playIconColorHover:{
+    color: '#555',
+  },
+  optionsIconColor:{
+   
+    color: '#ccc',
+  },
+  optionsIconColorHover:{
+    color: '#444',
+  },
+  appBarIconColor:{
+    color: '#999',
+  },
+  appBarIconColorHover:{
+    color: '#ECB365',
+  }
 });
