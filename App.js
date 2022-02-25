@@ -3,158 +3,32 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { SafeAreaView, TouchableWithoutFeedback } from 'react-native-web';
-
-
-const data = [
-  {
-    id: '1',
-    title: 'Tarzan of the Apes',
-    author: 'Edgar Rice Burroughs ',
-    progress: 'none',
-    img: require('./assets/images/tarzan.jpg')
-  },
-  {
-    id: '2',
-    title: 'The Princess of Mars',
-    author: 'Edgar Rice Burroughs',
-    progress: '100%',
-    img: require('./assets/images/princessofmars.jpg')
-  },
-  {
-    id: '3',
-    title: 'The Eye of the World',
-    author: 'Robert Jordan',
-    progress: '1.5%',
-    img: require('./assets/images/eyeoftheworld.jpg')
-  },
-  {
-    id: '4',
-    title: 'Fablehaven',
-    author: 'Brandon Mull',
-    progress: 'none',
-    img: require('./assets/images/fablehaven.jpg')
-  },
-
-];
-const CustomIcon = ({type, iconName, size})=>{
-  const [colors, setColors] = useState([])
-  useEffect(()=>{
-    switch(type) {
-    case 'default':
-      setColors([styles.defaultIconColor, styles.defaultIconColorHover]);
-      break;
-    case 'play':
-      setColors([styles.playIconColor, styles.playIconColorHover]);
-      break;
-    case 'options':
-      setColors([styles.optionsIconColor, styles.optionsIconColorHover]);
-      break;
-    case 'appbar':
-      setColors([styles.appBarIconColor, styles.appBarIconColorHover]);
-      break;
-    default:
-      setColors([styles.appBarIconColor, styles.appBarIconColorHover]);
-      break;
-    };
-    
-      
-    },[]);
-  return(
-    <View style={styles.icon}>
-    <Pressable >
-      {({pressed})=>(
-         
-        <Icon 
-          name={iconName} 
-          size={size} 
-          style={{padding:10},pressed ? colors && colors[1] : colors && colors[0]}
-          />
-      )}
-    </Pressable>
-  </View>
-  );
-};
-
-const BookItem = ({ title, author, progress, img }) => (
-  
-  <Pressable
-  style={({pressed})=>[
-    {
-      backgroundColor: (pressed ?'#05364c':'#04293A')
-    }, 
-  ]}>
-  <View style={styles.item}>
-    
-    <View style={styles.imageBox}>
-    <Image source={img}
-      style={styles.bookImage} />
-    </View>
-    <View style={styles.bookData}>
-      <View style={styles.bookMetadata}>
-        <Text style={styles.bookTitle}>{title}</Text>
-        <Text style={styles.bookText}>{author}</Text>
-        <Text style={styles.bookText}>{progress}</Text>
-
-      </View>
-      <View style={styles.bookRight}>
-        <CustomIcon type='play' iconName='play' size={25}/>
-      </View>
-    </View>
-  </View>
-  </Pressable>
-);
+import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Library from './screens/Library';
+import Home from './screens/Home';
+import CustomIcon from './components/CustomIcon';
+const Stack = createNativeStackNavigator();
 
 
 export default function App() {
-  const [searchText, setSearchText] = React.useState("");
-  const bookList = ({ item }) => (
-    <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem>
-  )
+  
   return (
-    <View style={styles.container}>
-      <View style={styles.topOptions}>
-        <View style={styles.topLeft}>
-          <CustomIcon iconName="folder-open" size={20} type='options' />
-        </View>
-        <View style={styles.topRight}>
-          <CustomIcon iconName="sort-alpha-down" size={20} type='options' />
-          <CustomIcon iconName="ellipsis-v" size={20} type='options' />
-        </View>
-      </View>
-      <View style={styles.header}>
-        <Text style={styles.titleText}>Library - Mike Plex
-        </Text>
-        <TextInput
-          style={styles.searchBar}
-          onChangeText={setSearchText}
-          placeholder="Search"
-          placeholderTextColor="#fff"
-        />
-      </View>
-      <View style={styles.containerList}>
-        <FlatList
-          data={data.filter(({title,author})=>{
-            const searchTitle = (title).toLowerCase().includes(searchText.toLowerCase());
-            const searchAuthor = (author).toLowerCase().includes(searchText.toLowerCase());
-            return searchTitle || searchAuthor;
-          }
-          )}
-          renderItem={bookList}
-          keyExtractor={item => item.id}
-        >
-
-        </FlatList>
-      </View>
-      <View style={styles.appBar}>
-        <CustomIcon iconName="home" size={25} type='appbar' />
-        <CustomIcon iconName="book-open" size={25} type="appbar" />
-        <CustomIcon iconName="bookmark" size={25} type="appbar" />
-        <CustomIcon iconName="user" size={25} type="appbar" />
-        <CustomIcon iconName="sliders-h" size={25} type="appbar" />
-
-      </View>
-      <StatusBar style='light' />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+      <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+          />
+        <Stack.Screen
+          name="Library"
+          component={Library}
+          options={{ headerShown: false }}
+          />
+    </Stack.Navigator>
+    
+    </NavigationContainer>
   );
 }
 
@@ -273,33 +147,5 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
   },
-  icon:{
-    paddingRight: 10,
-    paddingLeft: 10,
-  },
-  defaultIconColor:{
-    color: '#999',
-  },
-  defaultIconColorHover:{
-    color: '#ECB365',
-  },
-  playIconColor:{
-    color: '#ccc',
-  },
-  playIconColorHover:{
-    color: '#555',
-  },
-  optionsIconColor:{
-   
-    color: '#ccc',
-  },
-  optionsIconColorHover:{
-    color: '#444',
-  },
-  appBarIconColor:{
-    color: '#999',
-  },
-  appBarIconColorHover:{
-    color: '#ECB365',
-  }
+  
 });
