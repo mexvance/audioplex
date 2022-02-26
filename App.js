@@ -4,29 +4,87 @@ import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensi
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { SafeAreaView, TouchableWithoutFeedback } from 'react-native-web';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Library from './screens/Library';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import LibraryNav from './screens/LibraryNav';
 import Home from './screens/Home';
+import Profile from './screens/Profile';
+import Settings from './screens/Settings';
 import CustomIcon from './components/CustomIcon';
+import { borderTopColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Bookmarks from './screens/Bookmarks';
+import BookDetail from './screens/BookDetail';
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const screenOptions = (route, color) => {
+  let iconName;
 
-
+  switch (route.name) {
+    case 'Home':
+      iconName = 'home';
+      break;
+    case 'LibraryNav':
+      iconName = 'book-open';
+      break;
+    case 'Bookmarks':
+      iconName = 'bookmark';
+      break;
+    case 'Profile':
+      iconName = 'user';
+    break;
+      case 'Settings':
+      iconName = 'sliders-h';
+      break;
+    default:
+      break;
+  }
+  return <Icon name={iconName} color={color} size={24} />;
+};
 export default function App() {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-      <Stack.Screen
+      <Tab.Navigator
+      initialRouteName = 'Home'
+      screenOptions={({route}) => ({
+        tabBarStyle: styles.appBar,
+        tabBarIcon: ({color})=> screenOptions(route,color),
+        tabBarActiveTintColor: '#ECB365'
+      })}> 
+      <Tab.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
           />
-        <Stack.Screen
-          name="Library"
-          component={Library}
+        <Tab.Screen
+          name="LibraryNav"
+          component={LibraryNav}
           options={{ headerShown: false }}
+        
+          
+         />
+            
+           <Tab.Screen
+          name="Bookmarks"
+          component={Bookmarks}
+          options={{ headerShown: false }}
+          
           />
-    </Stack.Navigator>
+           <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
+          
+          />
+           <Tab.Screen
+          name="Settings" 
+          component={Settings}
+          options={{ headerShown: false }}
+          
+          />
+           
+    </Tab.Navigator>
+   
     
     </NavigationContainer>
   );
@@ -129,14 +187,9 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
   appBar: {
-    flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 15,
-    alignItems: 'center',
-    justifyContent: 'space-around',
     backgroundColor: '#041C32',
-    borderRadius: 20,
-    marginBottom: 20,
+    paddingTop: 10,
+    borderTopWidth: 0
   },
   searchBar: {
     fontSize: 18,

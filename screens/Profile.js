@@ -1,55 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native';
-import CustomIcon from '../components/CustomIcon';
-const data = [
-  {
-    id: '3',
-    title: 'The Eye of the World',
-    author: 'Robert Jordan',
-    progress: '1.5%',
-    img: require('../assets/images/eyeoftheworld.jpg')
-  },
+import CustomIcon from '../components/CustomIcon'; 
 
-];
+export default function Profile({navigation}) {
 
-
-const BookItem = ({ title, author, progress, img }) => (
-  
-  <Pressable
-  style={({pressed})=>[
-    {
-      backgroundColor: (pressed ?'#05364c':'#04293A')
-    }, 
-  ]}>
-  <View style={styles.item}>
-    
-    <View style={styles.imageBox}>
-    <Image source={img}
-      style={styles.bookImage} />
-    </View>
-    <View style={styles.bookData}>
-      <View style={styles.bookMetadata}>
-        <Text style={styles.bookTitle}>{title}</Text>
-        <Text style={styles.bookText}>{author}</Text>
-        <Text style={styles.bookText}>{progress}</Text>
-
-      </View>
-      <View style={styles.bookRight}>
-        <CustomIcon type='play' iconName='play' size={25}/>
-      </View>
-    </View>
-  </View>
-  </Pressable>
-);
-
-
-export default function Home({navigation}) {
-    
-  const [searchText, setSearchText] = React.useState("");
-  const bookList = ({ item }) => (
-    <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem>
-  )
   return (
     <View style={styles.container}>
       <View style={styles.topOptions}>
@@ -62,27 +17,15 @@ export default function Home({navigation}) {
         </View>
       </View>
       <View style={styles.header}>
-        <Text style={styles.titleText}>Home
+        <Text style={styles.titleText}>Profile
         
         </Text>
         <Text style={styles.bookTitle}>Recent</Text>
        
       </View>
       <View style={styles.containerList}>
-        <FlatList
-          data={data.filter(({title,author})=>{
-            const searchTitle = (title).toLowerCase().includes(searchText.toLowerCase());
-            const searchAuthor = (author).toLowerCase().includes(searchText.toLowerCase());
-            return searchTitle || searchAuthor;
-          }
-          )}
-          renderItem={bookList}
-          keyExtractor={item => item.id}
-        >
-
-        </FlatList>
+    
       </View>
-      
       <StatusBar style='light' />
     </View>
   );

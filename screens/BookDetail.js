@@ -3,10 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CustomIcon from '../components/CustomIcon'
-import { NavigationContainer } from '@react-navigation/native';import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-
-const Stack = createNativeStackNavigator();
 const data = [
   {
     id: '1',
@@ -38,18 +34,9 @@ const data = [
   },
 
 ];
-const BookItem = ({ title, author, progress, img, navigation }) => (
-    
-  <Pressable
-  onPress={()=>{
-        navigation && navigation.navigate('BookDetail',[title,author,progress,img])
-  }}
-  style={({pressed})=>[
-    {
-      backgroundColor: (pressed ?'#05364c':'#04293A')
-    }, 
-  ]}>
-  <View style={styles.item}> 
+const BookItem = ({ title, author, progress, img }) => (
+
+  <View style={styles.item}>
     
     <View style={styles.imageBox}>
     <Image source={img}
@@ -67,16 +54,14 @@ const BookItem = ({ title, author, progress, img, navigation }) => (
       </View>
     </View>
   </View>
-  </Pressable>
 );
 
 
-export default function Library({navigation}) {
+export default function BookDetail({navigation, item}) {
     
   const [searchText, setSearchText] = React.useState("");
-  const bookList = ({ item }) => (
-    <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img} navigation={navigation}></BookItem>
-  )
+    
+    console.log(item)
   return (
     <View style={styles.container}>
       <View style={styles.topOptions}>
@@ -88,30 +73,12 @@ export default function Library({navigation}) {
           <CustomIcon iconName="ellipsis-v" size={20} type='options' />
         </View>
       </View>
-      <View style={styles.header}>
-        <Text style={styles.titleText}>Library - Mike Plex
-        </Text>
-        <TextInput
-          style={styles.searchBar}
-          onChangeText={setSearchText}
-          placeholder="Search"
-          placeholderTextColor="#fff"
-        />
-      </View>
-      <View style={styles.containerList}>
-        <FlatList
-          data={data.filter(({title,author})=>{
-            const searchTitle = (title).toLowerCase().includes(searchText.toLowerCase());
-            const searchAuthor = (author).toLowerCase().includes(searchText.toLowerCase());
-            return searchTitle || searchAuthor;
-          }
-          )}
-          renderItem={bookList}
-          keyExtractor={item => item.id}
-        >
-
-        </FlatList>
-      </View>
+      <Pressable onPress={()=>{navigation.goBack()}}>
+      <Text style={styles.titleText}>
+          Back
+      </Text>
+      </Pressable>
+      {/* <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem> */}
       <StatusBar style='light' />
     </View>
   );
@@ -212,25 +179,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1/1,
     flex: 1,
     borderRadius: 7,
-  },
-  appBar: {
-    flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 15,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: '#041C32',
-    borderRadius: 20,
-    marginBottom: 20,
-  },
-  searchBar: {
-    fontSize: 18,
-    height: 40,
-    backgroundColor: '#064663',
-    color: 'white',
-    borderRadius: 20,
-    paddingLeft: 15,
-    paddingRight: 15,
   },
   icon:{
     paddingRight: 10,
