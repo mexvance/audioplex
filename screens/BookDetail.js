@@ -4,55 +4,24 @@ import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensi
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BookContext from '../components/BookContext';
 import CustomIcon from '../components/CustomIcon'
-const data = [
-  {
-    id: '1',
-    title: 'Tarzan of the Apes',
-    author: 'Edgar Rice Burroughs ',
-    progress: 'none',
-    img: require('../assets/images/tarzan.jpg')
-  },
-  {
-    id: '2',
-    title: 'The Princess of Mars',
-    author: 'Edgar Rice Burroughs',
-    progress: '100%',
-    img: require('../assets/images/princessofmars.jpg')
-  },
-  {
-    id: '3',
-    title: 'The Eye of the World',
-    author: 'Robert Jordan',
-    progress: '1.5%',
-    img: require('../assets/images/eyeoftheworld.jpg')
-  },
-  {
-    id: '4',
-    title: 'Fablehaven',
-    author: 'Brandon Mull',
-    progress: 'none',
-    img: require('../assets/images/fablehaven.jpg')
-  },
 
-];
-const BookItem = ({ item }) => {
-  console.log(item)
+const BookContent = ({ item }) => {
   return(
   <View style={styles.item}>
     
     <View style={styles.imageBox}>
-    <Image source={img}
+    <Image source={item.img}
       style={styles.bookImage} />
     </View>
     <View style={styles.bookData}>
       <View style={styles.bookMetadata}>
-        <Text style={styles.bookTitle}>{title}</Text>
-        <Text style={styles.bookText}>{author}</Text>
-        <Text style={styles.bookText}>{progress}</Text>
+        <Text style={styles.bookTitle}>{item.title}</Text>
+        <Text style={styles.bookText}>{item.author}</Text>
+        <Text style={styles.bookText}>{item.progress}</Text>
 
       </View>
-      <View style={styles.bookRight}>
-        <CustomIcon type='play' iconName='play' size={25}/>
+      <View style={styles.playPause}>
+        <CustomIcon style={styles.playPauseIcon}  type='play' iconName='play' size={50}/>
       </View>
     </View>
   </View>
@@ -61,10 +30,10 @@ const BookItem = ({ item }) => {
 
 
 export default function BookDetail({navigation, route}) {
-  const item = useContext(BookContext);
+
+  const context = useContext(BookContext);
   const [searchText, setSearchText] = React.useState("");
-    
-    console.log(item)
+
   return (
     
     <View style={styles.container}>
@@ -79,16 +48,12 @@ export default function BookDetail({navigation, route}) {
       </View>
       <Pressable onPress={()=>{navigation.goBack()}}>
       <Text style={styles.titleText}>
-          Back
+          {"<"}
       </Text>
       </Pressable>
-      <BookContext.Consumer>
-        {(item)=>(
-          <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem>
-        )}
-      {/* <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem> */}
-      </BookContext.Consumer>
-      
+      {context.book &&
+       <BookContent item={context.book}></BookContent>
+      }
       <StatusBar style='light' />
     </View>
   );
@@ -128,12 +93,6 @@ const styles = StyleSheet.create({
     paddingLeft: '3%',
     paddingRight: '3%',
   },
-  containerList: {
-    flex: 1,
-    alignItems: 'stretch',
-    paddingTop: '4%',
-
-  },
   titleText: {
     fontSize: 30,
     fontWeight: 'bold',
@@ -142,24 +101,24 @@ const styles = StyleSheet.create({
     paddingBottom: '3%',
   },
   item: {
-    flexDirection: "row",
-
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    backgroundColor: 'green',
   },
   bookData: {
-    alignSelf: 'stretch',
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: '#555',
+    backgroundColor: 'red',
+    alignItems: 'stretch',
     
-  },
-  bookRight: {
-    flexDirection: "row",
-    alignItems: 'center',
+      },
+  playPause: {
+    padding: 20,
+    alignItems: 'stretch',
+    flexDirection: 'row',
     justifyContent: 'center',
-    paddingRight: 20,
-    paddingLeft: 15,
-
+    backgroundColor: 'blue'
+  },
+  playPauseIcon:{
+    
   },
   bookText: {
     paddingTop: 2,
@@ -175,20 +134,18 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   bookMetadata: {
-    flexDirection: "column",
-    justifyContent: 'center',
-    flex: 1,
-    margin: 6,
   },
   imageBox:{
-    padding: 5,
-    flex: 1/3,
-    aspectRatio: 1 / 1,
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+
   },
   bookImage: {
+    justifyContent: 'center',
     aspectRatio: 1/1,
-    flex: 1,
-    borderRadius: 7,
+    width: '60%',
+    alignItems: 'stretch',
   },
   icon:{
     paddingRight: 10,
