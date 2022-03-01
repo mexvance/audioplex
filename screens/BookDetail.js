@@ -58,11 +58,11 @@ export default function BookDetail({navigation, route}) {
     </View>
   );
 }
-
+const color = '#04293A'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#04293A',
+    backgroundColor: color,
     alignItems: 'stretch',
     paddingTop: '10%',
     padding: '3%',
