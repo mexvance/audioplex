@@ -7,6 +7,13 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   
   return (
+    <BookContext.Provider value ={{
+      id: '1',
+      title: 'Tarzan of the Apes',
+      author: 'Edgar Rice Burroughs ',
+      progress: 'none',
+      img: require('../assets/images/tarzan.jpg')
+    }}>
       <Stack.Navigator
       initialRouteName = 'Library'
       >
@@ -24,5 +31,6 @@ export default function App() {
          />
            
     </Stack.Navigator>
+    </BookContext.Provider>
   );
 }

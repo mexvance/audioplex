@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import BookContext from '../components/BookContext';
 import CustomIcon from '../components/CustomIcon'
 const data = [
   {
@@ -34,8 +35,9 @@ const data = [
   },
 
 ];
-const BookItem = ({ title, author, progress, img }) => (
-
+const BookItem = ({ item }) => {
+  console.log(item)
+  return(
   <View style={styles.item}>
     
     <View style={styles.imageBox}>
@@ -54,15 +56,17 @@ const BookItem = ({ title, author, progress, img }) => (
       </View>
     </View>
   </View>
-);
+  )
+  };
 
 
-export default function BookDetail({navigation, item}) {
-    
+export default function BookDetail({navigation, route}) {
+  const item = useContext(BookContext);
   const [searchText, setSearchText] = React.useState("");
     
     console.log(item)
   return (
+    
     <View style={styles.container}>
       <View style={styles.topOptions}>
         <View style={styles.topLeft}>
@@ -78,7 +82,13 @@ export default function BookDetail({navigation, item}) {
           Back
       </Text>
       </Pressable>
+      <BookContext.Consumer>
+        {(item)=>(
+          <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem>
+        )}
       {/* <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img}></BookItem> */}
+      </BookContext.Consumer>
+      
       <StatusBar style='light' />
     </View>
   );
