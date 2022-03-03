@@ -5,15 +5,16 @@ import BookDetail from './BookDetail';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  
+  const [book,setBook] = useState({
+    id: '-1',
+    title: 'Unknown',
+    author: 'Unknown',
+    progress: 'Unknown',
+    img: ''
+  })
+  const value = {book, setBook}
   return (
-    <BookContext.Provider value ={{
-      id: '1',
-      title: 'Tarzan of the Apes',
-      author: 'Edgar Rice Burroughs ',
-      progress: 'none',
-      img: require('../assets/images/tarzan.jpg')
-    }}>
+    <BookContext.Provider value ={value}>
       <Stack.Navigator
       initialRouteName = 'Library'
       >

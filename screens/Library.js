@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -38,11 +38,13 @@ const data = [
   },
 
 ];
-const BookItem = ({ title, author, progress, img, navigation }) => (
-    
+const BookItem = ({ item, navigation }) => {    
+  const {book, setBook} = useContext(BookContext);
+  return(
   <Pressable
   onPress={()=>{
-        navigation && navigation.navigate('BookDetail',[title,author,progress,img])
+        setBook(item)
+        navigation && navigation.navigate('BookDetail')
   }}
   style={({pressed})=>[
     {
@@ -52,14 +54,15 @@ const BookItem = ({ title, author, progress, img, navigation }) => (
   <View style={styles.item}> 
     
     <View style={styles.imageBox}>
-    <Image source={img}
+    {item.img &&<Image source={item.img}
       style={styles.bookImage} />
+      }
     </View>
     <View style={styles.bookData}>
       <View style={styles.bookMetadata}>
-        <Text style={styles.bookTitle}>{title}</Text>
-        <Text style={styles.bookText}>{author}</Text>
-        <Text style={styles.bookText}>{progress}</Text>
+        <Text style={styles.bookTitle}>{item.title}</Text>
+        <Text style={styles.bookText}>{item.author}</Text>
+        <Text style={styles.bookText}>{item.progress}</Text>
 
       </View>
       <View style={styles.bookRight}>
@@ -68,14 +71,14 @@ const BookItem = ({ title, author, progress, img, navigation }) => (
     </View>
   </View>
   </Pressable>
-);
+)
+};
 
 
 export default function Library({navigation}) {
-    
   const [searchText, setSearchText] = React.useState("");
   const bookList = ({ item }) => (
-    <BookItem title={item.title} author={item.author} progress={item.progress} img={item.img} navigation={navigation}></BookItem>
+    <BookItem item={item} navigation={navigation}></BookItem>
   )
   return (
     <View style={styles.container}>
