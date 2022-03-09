@@ -16,6 +16,9 @@ import Bookmarks from './screens/Bookmarks';
 import BookDetail from './screens/BookDetail';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+
+
 const screenOptions = (route, color) => {
   let iconName;
 

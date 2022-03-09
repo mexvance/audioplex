@@ -1,10 +1,26 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, Text, Button, View, TextInput, ScrollView, FlatList, Image, Dimensions, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BookContext from '../components/BookContext';
 import CustomIcon from '../components/CustomIcon'
+import TrackPlayer from 'react-native-track-player'
+// const start = async () => {
+//     // Set up the player
+//     await TrackPlayer.setupPlayer();
 
+    // Add a track to the queue
+    // await TrackPlayer.add({
+    //     id: '1',
+    //     url: require('../audio/princess.mp3'),
+    //     title: 'Princess of Mars',
+    //     artist: 'Edgar Rice Burroughs',
+    //     artwork: require('./../assets/images/princessofmars.jpg')
+    // });
+
+    // Start playing it
+    // await TrackPlayer.play();
+//};
 const BookContent = ({ item }) => {
   return(
   <View style={styles.item}>
@@ -18,7 +34,7 @@ const BookContent = ({ item }) => {
         <Text style={styles.bookTitle}>{item.title}</Text>
         <Text style={styles.bookText}>{item.author}</Text>
         <Text style={styles.bookText}>{item.progress}</Text>
-
+        <Button onPress={start} title="play" color="blue"/>
       </View>
       <View style={styles.playPause}>
         <CustomIcon style={styles.playPauseIcon}  type='play' iconName='play' size={50}/>
